@@ -5,11 +5,12 @@ An automated system for detecting high-impact soccer events (Goal, Card, Penalty
 
 ## Model Evolution: From V1 to V4
 
-### Initial Version (V1/V2)
-- **Scope**: Attempted to detect 5+ event classes including Substitutions.
-- **Issues**: Extreme class imbalance (98% No-Event), causing the model to miss rare events like Red Cards and Penalties.
-- **Hardware**: Heavy dependency on cloud GPUs (Tesla T4).
-- **Performance**: High recall noise; F1-Score for highlights was low (< 0.40).
+### Initial Version (V1/V2) - Challenges & Limitations
+The early iterations of the model faced significant hurdles that prevented effective deployment:
+
+1.  **Severe Class Imbalance**: The dataset was dominated by "No-Event" samples (**98%**), causing the model to bias heavily towards predicting nothing. It achieved high accuracy on paper but failed to detect rare, critical events like Red Cards (<0.1%).
+2.  **Noise from Irrelevant Classes**: Including "Substitution" and "Corner" classes introduced significant noise. These events are frequent but low-impact, confusing the model's focus on high-priority highlights (Goals).
+3.  **Data Inconsistency**: Mismatched filenames between transcripts and label files (e.g., `Chelsea vs Burnley` vs `Chelsea - Burnley`) led to **30-40% training data loss** due to failed alignments.
 
 ### Final Version (V4 - Optimized)
 - **Refined Scope**: Focused strictly on **Highlights** (Goal, Card, Penalty). Removed "Substitution" to reduce noise.
@@ -20,6 +21,7 @@ An automated system for detecting high-impact soccer events (Goal, Card, Penalty
     - **Goal**: 14.0%
     - **Card**: 17.7%
     - **Penalty**: 1.6% (Heavily weighted w/ Class Weight 3.92)
+- **Training Environment**: High-performance training on **Google Colab (Tesla T4 GPU)** using Mixed Precision (FP16).
 
 ## Training Results
 The V4 model was trained for 5 epochs with consistent performance gains:
@@ -44,7 +46,7 @@ The V4 model was trained for 5 epochs with consistent performance gains:
 *Model successfully captured all goals in a chaotic 7-goal match.*
 
 ## Repository Structure
-- `train_local_v4.py`: The main training script optimized for local execution.
+- `train_v4.py`: The main training script.
 - `test_full_match.py`: Inference script for generating highlights from JSON transcripts.
 - `evaluate_result.py`: Evaluation tool for calculating Precision/Recall against ground truth.
 - `models_v4/`: Directory for trained model artifacts.
@@ -60,7 +62,7 @@ pip install transformers scikit-learn accelerate
 ### 2. Training (Local V4)
 To train the model on your local machine:
 ```bash
-python train_local_v4.py
+python train_v4.py
 ```
 
 ### 3. Running Inference (Test)
