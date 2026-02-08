@@ -20,9 +20,6 @@ An automated system for detecting high-impact soccer events (Goal, Card, Penalty
     - **Goal**: 14.0%
     - **Card**: 17.7%
     - **Penalty**: 1.6% (Heavily weighted w/ Class Weight 3.92)
-- **Local Optimization**:
-  - Runs on **4GB VRAM** (e.g., RTX 3050 Ti) using Gradient Accumulation (Steps=16).
-  - Mixed Precision (FP16) training.
 
 ## Training Results
 The V4 model was trained for 5 epochs with consistent performance gains:
